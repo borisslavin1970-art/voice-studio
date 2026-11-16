@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self' blob: data:; worker-src 'self' blob:; connect-src 'self' wss://generativelanguage.googleapis.com ws://localhost:* ws://127.0.0.1:*; base-uri 'none'; form-action 'none'">
+<meta name="theme-color" content="#0e348c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Студия">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="stylesheet" href="style.css">
+<title>Голосовая студия</title>
+</head>
+<body>
+<header>
+  <h1>Голосовая студия</h1>
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="studio" aria-selected="true">Студия</button>
+    <button role="tab" data-tab="trans" aria-selected="false">Переводчик</button>
+    <button role="tab" data-tab="settings" aria-selected="false">Настройки</button>
+  </nav>
+</header>
+
+<main>
+  <!-- ===================== СТУДИЯ ===================== -->
+  <section id="tab-studio" class="panel">
+    <details class="opts" open>
+    <summary>Голос и манера чтения</summary>
+    <div class="grid">
+      <label>Голос
+        <select id="s-voice"></select>
+      </label>
+      <label>Показать
+        <select id="s-gender"><option value="">Все голоса</option><option value="жен">Женские</option><option value="муж">Мужские</option></select>
+      </label>
+    </div>
+    <p id="s-info" class="info"></p>
+    <div class="grid">
+      <label>Профессия <input id="s-job" list="dl-jobs" autocomplete="off" placeholder="например, диктор новостей"></label>
+      <label>Настроение <input id="s-mood" list="dl-moods" autocomplete="off"></label>
+      <label>Интонация <input id="s-tone" list="dl-tones" autocomplete="off"></label>
+      <label>Возраст <input id="s-age" list="dl-ages" autocomplete="off"></label>
+      <label>Акцент <select id="s-accent"></select></label>
+      <label>Сила акцента <select id="s-strength"></select></label>
+    </div>
+    </details>
+    <label class="wide">Текст (Enter — озвучить, Shift+Enter — новая строка)
+      <textarea id="s-text" rows="4" placeholder="Введите или вставьте текст…"></textarea>
+    </label>
+    <div class="bar">
+      <button id="s-say" class="primary">Озвучить</button>
+      <button id="s-paste">Вставить и озвучить</button>
+      <button id="s-stop">Стоп</button>
+      <span id="s-status" class="status">…</span>
+      <span id="s-lat" class="lat"></span>
+    </div>
+    <div id="s-log" class="log" aria-live="polite"></div>
+  </section>
+
+  <!-- ===================== ПЕРЕВОДЧИК ===================== -->
+  <section id="tab-trans" class="panel" hidden>
+    <div class="grid">
+      <label>Язык 1 <input id="t-l1" list="dl-langs" autocomplete="off" value="русский"></label>
+      <label>Язык 2 <input id="t-l2" list="dl-langs" autocomplete="off" value="английский"></label>
+      <button id="t-swap" class="swap" title="Поменять языки местами">⇄</button>
+    </div>
+    <details class="opts" open>
+    <summary>Движок, голос и манера перевода</summary>
+    <div class="grid">
+      <label class="span2">Движок
+        <select id="t-engine">
+          <option value="live">Gemini 3.8 Live — гибкий: профессия, интонация, обе стороны, текст</option>
+          <option value="translate">Live Translate — синхронный: переводит почти сразу, пока вы говорите (речь → язык 2)</option>
+        </select>
+      </label>
+      <label class="span2">Режим
+        <select id="t-mode">
+          <option value="both">в обе стороны (язык 1 ⇄ язык 2)</option>
+          <option value="one">только язык 1 → язык 2</option>
+        </select>
+      </label>
+    </div>
+    <div class="grid">
+      <label>Голос <select id="t-voice"></select></label>
+      <label>Показать
+        <select id="t-gender"><option value="">Все голоса</option><option value="жен">Женские</option><option value="муж">Мужские</option></select>
+      </label>
+    </div>
+    <p id="t-info" class="info"></p>
+    <div class="grid">
+      <label>Профессия <input id="t-job" list="dl-jobs" autocomplete="off"></label>
+      <label>Интонация <input id="t-tone" list="dl-tones" autocomplete="off"></label>
+    </div>
+    </details>
+    <label class="check"><input type="checkbox" id="t-phones"> Я в наушниках (можно перебивать переводчика)</label>
+    <label class="wide">Текст для перевода (необязательно)
+      <textarea id="t-text" rows="3" placeholder="Можно печатать вместо микрофона…"></textarea>
+    </label>
+    <div class="bar">
+      <button id="t-mic" class="primary">🎤 Включить микрофон</button>
+      <button id="t-say">Перевести текст</button>
+      <button id="t-paste">Вставить и перевести</button>
+      <button id="t-stop">Стоп</button>
+      <span id="t-status" class="status">…</span>
+      <span id="t-lat" class="lat"></span>
+    </div>
+    <div id="t-log" class="log" aria-live="polite"></div>
+  </section>
+
+  <!-- ===================== НАСТРОЙКИ ===================== -->
+  <section id="tab-settings" class="panel" hidden>
+    <h2>Ключ Gemini API</h2>
+    <p class="info">Ключ создаётся бесплатно: <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>.
+      Он хранится только в этом браузере на этом устройстве и отправляется только в Google (Gemini API).</p>
+    <label class="wide">Ключ API <input id="key" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="AIza… или AQ.…"></label>
+    <div class="bar">
+      <button id="key-save" class="primary">Сохранить</button>
+      <button id="key-test">Проверить подключение</button>
+      <button id="key-forget">Забыть ключ</button>
+    </div>
+    <p id="key-out" class="info"></p>
+
+    <h2>Журнал и диагностика</h2>
+    <p class="info">Подробный журнал (подключения, таймауты, ошибки) хранится только в памяти страницы. Тексты в него не пишутся, только их длина.</p>
+    <div class="bar">
+      <button id="log-copy">Скопировать журнал</button>
+      <button id="log-save">Скачать журнал</button>
+      <button id="consent-reset">Показать согласие снова</button>
+    </div>
+
+    <h2>Установка на iPhone / Mac</h2>
+    <p class="info">iPhone (Safari): кнопка «Поделиться» → «На экран “Домой”». Mac (Safari): «Файл» → «Добавить в Dock». Chrome / Edge: значок «Установить» в адресной строке.
+      Нужен адрес с https:// (или localhost), иначе браузер не даст доступ к микрофону.</p>
+    <p class="info">Ограничения: на iPhone звук и микрофон работают, пока экран включён и приложение открыто; кнопка «без звука» на боковой стороне
+      может заглушать звук. <span id="version"></span></p>
+  </section>
+</main>
+
+<datalist id="dl-jobs"></datalist>
+<datalist id="dl-moods"></datalist>
+<datalist id="dl-tones"></datalist>
+<datalist id="dl-ages"></datalist>
+<datalist id="dl-langs"></datalist>
+
+<div id="consent" class="overlay" hidden>
+  <div class="card">
+    <h2>Прежде чем начать</h2>
+    <p>Приложение озвучивает и переводит с помощью <b>Google Gemini</b>. Поэтому:</p>
+    <ul>
+      <li>введённые вами тексты и звук с микрофона <b>передаются в Google</b> (Gemini API) для обработки;</li>
+      <li>вы используете <b>свой ключ API</b>, он хранится только на этом устройстве;</li>
+      <li>условия и хранение данных определяет Google; для бесплатных ключей данные могут использоваться для улучшения сервисов Google.</li>
+    </ul>
+    <p>Не отправляйте конфиденциальную информацию. Нажимая «Согласен», вы разрешаете такую передачу.</p>
+    <div class="bar"><button id="consent-ok" class="primary">Согласен</button></div>
+  </div>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

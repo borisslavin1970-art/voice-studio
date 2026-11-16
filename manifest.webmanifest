@@ -1,0 +1,16 @@
+{
+  "name": "Голосовая студия",
+  "short_name": "Студия",
+  "description": "Озвучка текста и голосовой переводчик на Gemini Live",
+  "lang": "ru",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0e348c",
+  "theme_color": "#0e348c",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
